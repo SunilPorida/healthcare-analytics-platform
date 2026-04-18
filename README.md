@@ -1,62 +1,44 @@
 # Healthcare Analytics Platform
 
-End-to-end analytics stack for healthcare data: ingestion, transformation, warehouse-style SQL, machine learning, and API exposure. Business intelligence is delivered via **Power BI** connected to curated datasets (Snowflake tables, API exports, or semantic models you publish).
-
-## Repository layout
-
-| Path | Purpose |
-|------|---------|
-| `data/raw` | Immutable landing zone for source extracts (not committed). |
-| `data/processed` | Cleaned, conformed, or feature-ready datasets (not committed). |
-| `etl/ingestion` | Pull/load jobs (files, APIs, streams) into raw or staging. |
-| `etl/transformations` | Business rules, joins, aggregations toward processed/analytics layers. |
-| `sql/schema` | DDL and incremental migration scripts for warehouse tables. |
-| `sql/queries` | Reusable analytical SQL (reports, exports, validation). |
-| `ml_model/training` | Training pipelines, hyperparameters, experiment tracking hooks. |
-| `ml_model/prediction` | Batch or online scoring, model artifacts loading. |
-| `api` | FastAPI service for health checks, metadata, and controlled data access. |
-| `dashboard` | Guidance for Power BI datasets, refresh, and row-level security patterns. |
-| `tests/data_validation` | Great Expectations-style or custom checks on pipelines and tables. |
-| `tests/uat` | User acceptance scenarios and sign-off checklists. |
-| `docs` | Architecture decisions, diagrams, and runbooks. |
+A structured Python project for healthcare data engineering, analytics, and model-driven insights. The repository separates raw and processed data, ETL logic, warehouse SQL, machine learning components, a service API, automated tests, documentation, and dashboard guidance.
 
 ## Tech stack
 
-- **Python** — orchestration and services  
-- **Pandas / PySpark** — single-node and distributed transforms  
-- **SQL** — semantic layer in Snowflake (or compatible engines)  
-- **Snowflake** — production warehouse; use dev accounts or mocks locally  
-- **AWS S3** — object storage; use **LocalStack** or **MinIO** locally if needed  
-- **FastAPI** — operational and read APIs  
-- **Power BI** — external dashboards and governance (see `dashboard/`)
+- **Python** — application runtime and automation  
+- **Pandas / PySpark** — tabular and large-scale data processing  
+- **SQL** — schemas, transformations, and analytical queries against your warehouse or database  
+- **FastAPI** — HTTP APIs for services, integrations, and operational endpoints  
+
+## Repository layout
+
+| Folder | Purpose |
+|--------|---------|
+| `data/raw` | Source-aligned extracts and landing files (not committed). |
+| `data/processed` | Cleaned or feature-ready datasets for downstream use (not committed). |
+| `etl` | Ingestion and transformation jobs. |
+| `sql` | DDL, migrations, and reusable queries. |
+| `ml_model` | Training and inference code and configuration. |
+| `api` | FastAPI application. |
+| `tests` | Unit and integration tests. |
+| `docs` | Architecture notes and diagrams. |
+| `dashboard` | Instructions and conventions for BI dashboards (e.g. Power BI). |
 
 ## Quick start
 
 ```bash
-python -m venv .venv
-.venv\Scripts\activate
+python -m venv venv
+venv\Scripts\activate
 pip install -r requirements.txt
-copy .env.example .env
-uvicorn api.main:app --reload --host 0.0.0.0 --port 8000
 ```
 
-Open `http://localhost:8000/docs` for interactive API documentation.
-
-## Local simulation notes
-
-- **S3**: Point `AWS_ENDPOINT_URL` (if supported by your code) to LocalStack or MinIO; use distinct buckets for `raw` and `processed`.  
-- **Snowflake**: Prefer a dedicated dev warehouse and role; avoid production credentials in `.env`. For unit tests, mock connectors or use a lightweight SQLite staging layer where appropriate.
-
-## Testing
+Create local data directories if they do not exist yet:
 
 ```bash
-pytest tests -q
+mkdir data\raw data\processed
 ```
 
-## Documentation
+Run the API (when implemented):
 
-See `docs/architecture.md` and `docs/diagrams/` for system context and data flow.
-
-## License
-
-Proprietary / internal use unless otherwise specified.
+```bash
+uvicorn api.main:app --reload --host 0.0.0.0 --port 8000
+```
